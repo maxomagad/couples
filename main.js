@@ -20,6 +20,7 @@ function startGame(container, cardsCount) {
   for (const cardNumber of cardNumberArray) {
     cardArray.push(new Card(container, cardNumber, flip))
   }
+
   //условия сравнения карточек
   function flip(card) {
     if (firstCard !== null && secondCard !== null) {
@@ -57,11 +58,17 @@ function startGame(container, cardsCount) {
   }
   //таймер + условие проигрыша
   let seconds = 59;
-  timer = setInterval(function () {
+  let timer = setInterval(function () {
     if (seconds < 0) {
       clearInterval(timer);
       if (alert('Время закончилось. \nВы проиграли!') == true) { } else {
         buttonRestart.removeAttribute("hidden")
+        //некликабельность карточек после проигрыша
+        let elements = document.getElementsByClassName("card");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].classList.add("disable");
+          elements[i].classList.remove("open");
+        }
       }
     } else {
       timerCount.innerHTML = 'Оставшееся время: 0:' + `${seconds}`;
@@ -71,6 +78,7 @@ function startGame(container, cardsCount) {
 }
 //кнопка старта игры
 buttonStart.addEventListener('click', function () {
+  clearInterval(timer);
   let cardsCount = document.getElementById('cardsCount').value;
   if (cardsCount <= 1 || cardsCount >= 11) {
     cardsCount = 4
@@ -82,6 +90,7 @@ buttonStart.addEventListener('click', function () {
 });
 //кнопка рестарта игры
 buttonRestart.addEventListener('click', function () {
+  clearInterval(timer);
   buttonStart.removeAttribute("disabled", "")
   buttonRestart.setAttribute("hidden", "")
   //стираение игры
@@ -93,6 +102,6 @@ buttonRestart.addEventListener('click', function () {
   timerCount.innerHTML = 'Оставшееся время: 1:00'
 });
 //запрет писать что-то кроме цифр в инпуте
-document.getElementById('cardsCount').addEventListener("keyup", function(){
+document.getElementById('cardsCount').addEventListener("keyup", function () {
   this.value = this.value.replace(/[^\d]/g, "");
 });
